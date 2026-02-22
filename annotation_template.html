@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Instructions Template</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Add languages you expect to use -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/toml.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --link-color: #3498db;
+            --bg-light: #f8f9fa;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .toc-pane {
+            width: 250px;
+            background: var(--bg-light);
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .toc-pane h3 {
+            font-size: 1.1rem;
+            margin-top: 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-item {
+            margin: 0.5rem 0;
+        }
+
+        .toc-item a {
+            text-decoration: none;
+            color: #555;
+            transition: color 0.2s;
+        }
+
+        .toc-item a:hover {
+            color: var(--link-color);
+        }
+
+        .toc-item.level-2 { margin-left: 0; font-weight: bold; }
+        .toc-item.level-3 { margin-left: 1rem; }
+
+        .main-flow {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            z-index: 1;
+        }
+
+        .annotation-pane {
+            width: 400px;
+            background: var(--bg-light);
+            padding: 2rem;
+            overflow-y: auto;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .annotation-link {
+            color: var(--link-color);
+            border-bottom: 1px dashed var(--link-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .annotation-link:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .annotation-content {
+            display: none;
+            line-height: 1.6;
+        }
+
+        .annotation-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .placeholder-text {
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        h1, h2, h3 { color: var(--primary-color); }
+
+        /* Feedback Modal */
+        #feedback-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 { margin-top: 0; }
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .modal-content textarea { height: 100px; }
+        .modal-actions { text-align: right; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: var(--link-color); color: white; }
+        .btn-secondary { background: #eee; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- FEEDBACK MODAL -->
+    <div id="feedback-modal">
+        <div class="modal-content">
+            <h3 id="feedback-title">Feedback: Topic</h3>
+            <input type="text" id="fb-reader" placeholder="Your Name (Optional)">
+            <textarea id="fb-content" placeholder="Your feedback..."></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeFeedback()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitFeedback()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc-pane" id="toc-container">
+        <h3>Contents</h3>
+        <ul class="toc-list" id="toc-list">
+            <!-- ToC items will be injected here -->
+        </ul>
+    </div>
+
+    <!-- PRIMARY CONTENT AREA -->
+    <div class="main-flow" id="main-content">
+        <h1>Project Title</h1>
+        <p>This is your main instruction flow. Click on the highlighted terms to see more details in the right panel.</p>
+        
+        <section>
+            <h2>1. Introduction</h2>
+            <p>Welcome to the guide. Before we start, make sure you understand the 
+                <span class="annotation-link" data-target="prerequisites">Prerequisites</span>.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. Implementation</h2>
+            <p>We will be using a 
+                <span class="annotation-link" data-target="tech-stack">Modern Tech Stack</span> 
+                to build out the features. Follow the 
+                <span class="annotation-link" data-target="naming-convention">Naming Conventions</span> 
+                defined in our style guide.
+            </p>
+        </section>
+    </div>
+
+    <!-- ANNOTATION AREA -->
+    <div class="annotation-pane" id="annotation-container">
+        <!-- Default State -->
+        <div id="default-msg" class="placeholder-text">
+            Select a highlighted term to view annotations.
+        </div>
+        
+        <!-- Annotation: Prerequisites -->
+        <div id="prerequisites" class="annotation-content">
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Node.js v18+</li>
+                <li>Git installed</li>
+                <li>Basic knowledge of Markdown</li>
+            </ul>
+        </div>
+
+        <!-- Annotation: Tech Stack -->
+        <div id="tech-stack" class="annotation-content">
+            <h3>Tech Stack</h3>
+            <p>The project uses:</p>
+            <ul>
+                <li><strong>HTML5/CSS3</strong> for structure</li>
+                <li><strong>Vanilla JS</strong> for interactions</li>
+                <li><strong>Markdown</strong> for content</li>
+            </ul>
+        </div>
+
+        <!-- Annotation: Naming Convention -->
+        <div id="naming-convention" class="annotation-content">
+            <h3>Naming Conventions</h3>
+            <p>Please use <code>kebab-case</code> for file names and <code>camelCase</code> for variable names within your scripts.</p>
+        </div>
+    </div>
+
+    <script>
+        let currentFeedbackTopic = '';
+
+        function openFeedback(topic) {
+            currentFeedbackTopic = topic;
+            document.getElementById('feedback-title').innerText = 'Feedback: ' + topic;
+            document.getElementById('feedback-modal').style.display = 'block';
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedback-modal').style.display = 'none';
+        }
+
+        function submitFeedback() {
+            const reader = document.getElementById('fb-reader').value;
+            const content = document.getElementById('fb-content').value;
+
+            if (!content) {
+                alert("Please enter your feedback.");
+                return;
+            }
+
+            fetch('/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    topic: currentFeedbackTopic,
+                    reader: reader || 'Anonymous',
+                    content: content
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Feedback submitted! Thank you.");
+                    closeFeedback();
+                    document.getElementById('fb-reader').value = '';
+                    document.getElementById('fb-content').value = '';
+                } else {
+                    alert("Error submitting feedback. Is the server running?");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Could not connect to the feedback server.");
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+            const links = document.querySelectorAll('.annotation-link');
+            const contents = document.querySelectorAll('.annotation-content');
+            const defaultMsg = document.getElementById('default-msg');
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const targetId = e.target.getAttribute('data-target');
+                    
+                    if (e.target.classList.contains('feedback-link')) {
+                        openFeedback(targetId);
+                        return;
+                    }
+
+                    // Hide default message
+                    defaultMsg.style.display = 'none';
+
+                    // Deactivate all previous annotations
+                    contents.forEach(el => el.classList.remove('active'));
+
+                    // Activate the target
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        target.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
