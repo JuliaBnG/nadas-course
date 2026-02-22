@@ -2,7 +2,7 @@
 
 *This course is primarily designed for data scientists working on breeding and
 genetics.  People who want to use Julia for other purposes may also find it
-useful.*
+useful.  We will learn the development cycle of a Julia project.*
 
 ## Preface
 
@@ -11,10 +11,10 @@ its capability.  One can also lift light weights the way to lift heavy weights
 (in Chinese, 举轻若重).  The latter is sometime more meaningful:
 
 - The readers here have most probably had some programming trainings before.
-- We are dealing with *heavier* tasks more or less.
-- The *hard* way shown here may serve the readers a easier life in the future.
+- We are dealing with *heavy* tasks more or less.
+- The *hard* way shown here may serve the readers an easier life in the future.
 
-### What you will learn in this course
+### What you will learn
 
 The main goal of this course is to instruct you to set up a Julia simulation
 project, which uses packages that are under the umbrella of `JuliaBnG`.
@@ -24,6 +24,16 @@ We will show you how to
 - [*Optional*] Configure `git` to manage your project.
 - Write, manage and build a `julia` project.
 - Trace and test your `julia` project using `Revise.jl`.
+
+Note that my configurations may not be optimal.  You may give me some feedback
+and suggestions at the bottom of the page.
+
+### Conventions
+
+- External links will be opened in a new tab if clicked.
+- Annotations will appear in the right most column if clicked.
+- Inline codes are in `deep pink` color.
+- Feel free to click the links, especially the annotations.
 
 ## Introduction
 
@@ -114,42 +124,127 @@ the same template.
 
 ### Project analysis
 
-We can take some key figures from the [Fluffy sheep breeder](https://sheep-breeder-2.vercel.app/):
+We can take some numbers from the [Fluffy sheep breeder](https://sheep-breeder-2.vercel.app/) webpage:
 
 - $N_{\mathrm{ram}} = 50$
-  - determined by dragging the slider to the right most.
 - $N_{\mathrm{ewe}} = 100$
 - Two traits
   - Curliness
+    - $\mu_0 = 100$
+    - $\sigma_P = 10$
   - Wool length
+    - $\mu_0 = 100$
+    - $\sigma_P = 10$
+- Final score seems to be final mean of the two traits minus 200.
 
-Let's observe more about the two traits.  From the Flock Average plot, we can
-see the means of the two traits are both 100 at generation 0.  From the the
-scatter plot of flock candidates, we can see that the two traits are both ranged
-in about (70, 130).  We can guess that $\sigma_P$ of both traits are about 10.
+It is likely that the wool length has higher heritability than curliness.
 
-The two traits are negatively correlated.  The phenotype plot shows that the
-regression coefficient is about -1.  If we select 20 rams and 60 ewes in
-generation 0, and balanced weights to produce generation 1, curliness usually
-has more progress than wool length.  Curliness here seems to have higher
-heritability than wool length as if we weight curliness more, there are more
-last generation genetic trend difference than that of weighting wool length
-more.
+Above are my observations.  Correct me if you find otherwise.  
 
-Another parameter is inbreeding. The site want it to be less than 1.25%.  This
-can be determined easily.  We can come back to this later.
+Our task is to write a Julia simulation package to run on our own computer to
+find a breeding program that can achieve the highest score possible.
 
-To make a high score, we need to know how is the final score calculated.  
+### Development of the package
 
-To summarize, we know the following:
+Before we start, make sure again that you have had your environment setup as
+described in the previous section.  We will stay in the Julia REPL until we
+finish the project.  
 
-- $N_{\mathrm{ram}} = 50$
-- $N_{\mathrm{ewe}} = 100$
-- $\sigma_{P,1} \approx 10$
-- $\sigma_{P,2} \approx 10$
-- $\rho_{P,12} \approx -1$
-- $\Delta F < 1.25\%$
-- 
-We want to know:
+#### 1. Create the project
 
-- How is the final score calculated?
+In your terminal, go to the directory where you want to create the project:
+
+```bash
+cd ~/projects  # or the directory you want to save your project
+julia          # to enter Julia REPL
+```
+
+Type `]` to enter the package mode, and then type the following command:
+
+```julia
+generate flfSheep
+# type <backspace> to exit the package mode, and back to the REPL
+cd("flfSheep")  # to enter the project directory
+# type `]` to enter the package mode again
+activate .  # to activate the project we just created
+# "(flfSheep) pkg>" is shown as the prompt
+# type `status` to see the status of the project
+# type `<backspace>` to exit the package mode
+using flfSheep  # to load the project
+```
+
+Click the next link to see the [structure of the
+project](annotation:project-structure).
+
+We can see that there is a `greet` function in the `src/flfSheep.jl` file.
+Below is what you might see in your terminal:
+
+![](start.png)
+
+Mean while, you might want to read the [almighty tab](annotation:almighty-tab)
+
+At this stage, you can use your favorite editor to edit the files in the project
+directory.
+
+#### 2. Add some `JuliaBnG` packages
+
+In the REPL, type `]` to enter the package mode, and then type the following command:
+
+```julia
+add BnGStructs
+add FisherWright
+add RelationshipMatrices
+# I haven't registered Breeding.jl in the General registry while writing this tutorial.
+# You can add it by using the following command:
+add https://github.com/JuliaBnG/Breeding.jl
+```
+
+Click the next link to see [what have changed](annotation:what-have-changed).
+
+#### 3. Write a test function
+
+Refer [hello world project](annotation:hello-world-project) to make sure that
+you have done the steps below correctly, as well as some explanations.
+
+Create a file `src/tstBreeding.jl` with the following content:
+
+```julia
+"""
+  tstFlf()
+
+Test scripts to find a good breeding program for the fluffy sheep.
+"""
+function tstFlf()
+   @info "Starting the test function" 
+end
+```
+
+Replace the line
+
+```julia
+greet() = print("Hello World!")
+```
+
+in `src/flfSheep.jl` with 
+
+```julia
+using BnGStructs
+using FisherWright
+using RelationshipMatrices
+using Breeding
+
+include("tstBreeding.jl")
+```
+
+Up to now, although the package `flfSheep` doesn't do anything useful, we have
+successfully created a package and added some dependencies to it.  This is a
+package *Hello world*.  From this point, we can start to write our own breeding
+program simulation, which might be a `Hamlet` or `Macbeth` in breeding.
+
+The rest of the tutorial will focus on the `tstBreeding.jl` file, which are in a
+new section.
+
+## The simulation
+
+I will post a skeleton of the simulation program here with
+[explanations](annotation:simulation-skeleton).
