@@ -19,7 +19,7 @@ its capability.  One can also lift light weights the way to lift heavy weights
 The main goal of this course is to instruct you to set up a Julia simulation
 project, which uses packages that are under the umbrella of `JuliaBnG`.
 
-We will show you how to
+I will also show you how to
 
 - [*Optional*] Configure `git` to manage your project.
 - Write, manage and build a `julia` project.
@@ -191,12 +191,13 @@ directory.
 In the REPL, type `]` to enter the package mode, and then type the following command:
 
 ```julia
-add BnGStructs
-add FisherWright
-add RelationshipMatrices
+add BnGStructs           # from JuliaBnG
+add DataFrames
+add FisherWright         # from JuliaBnG
+add RelationshipMatrices # from JuliaBnG
 # I haven't registered Breeding.jl in the General registry while writing this tutorial.
 # You can add it by using the following command:
-add https://github.com/JuliaBnG/Breeding.jl
+add https://github.com/JuliaBnG/Breeding.jl  # from JuliaBnG
 ```
 
 Click the next link to see [what have changed](annotation:what-have-changed).
@@ -229,6 +230,7 @@ in `src/flfSheep.jl` with
 
 ```julia
 using BnGStructs
+using DataFrames
 using FisherWright
 using RelationshipMatrices
 using Breeding
@@ -241,10 +243,41 @@ successfully created a package and added some dependencies to it.  This is a
 package *Hello world*.  From this point, we can start to write our own breeding
 program simulation, which might be a `Hamlet` or `Macbeth` in breeding.
 
-The rest of the tutorial will focus on the `tstBreeding.jl` file, which are in a
-new section.
+The rest of the tutorial all included in the `tstBreeding.jl` file, which is
+shown in the next section.
 
 ## The simulation
 
 I will post a skeleton of the simulation program here with
 [explanations](annotation:simulation-skeleton).
+
+
+
+## Final remarks
+
+I hope you have enjoyed this tutorial.  Below are some more topics that I want
+to address a few words.
+
+### About AI
+
+The template for this tutorial was written by AI.  It is one prompt for my first
+2-column webpage.  I prompted a few more to reach this final format.  You can
+download all the "source codes" of this tutorial from its `JuliaBnG` [github
+page](https://github.com/JuliaBnG/nadas-course).  For example:
+
+```bash
+git clone https://github.com/JuliaBnG/nadas-course
+```
+
+AI can't be avoided for people who are actively working today.  My argue for AI
+is, 
+
+> Since AI has caused an exodus of computer science students and work force, it is  
+
+---
+
+*This tutorial was written in February 2026.*
+
+by *Dr. Xijiang Yu*
+
+*Last updated: February 2026*
