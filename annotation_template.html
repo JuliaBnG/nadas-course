@@ -6,6 +6,7 @@
     <title>Interactive Instructions Template</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
     <!-- Add languages you expect to use -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/julia.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
@@ -166,6 +167,24 @@
         .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
         .btn-primary { background: var(--link-color); color: white; }
         .btn-secondary { background: #eee; margin-right: 10px; }
+
+        /* Line Numbers Style */
+        .hljs-ln-numbers {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            text-align: right;
+            color: #ccc;
+            border-right: 1px solid #CCC;
+            vertical-align: top;
+            padding-right: 5px;
+        }
+
+        .hljs-ln-code {
+            padding-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -298,6 +317,9 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             hljs.highlightAll();
+            document.querySelectorAll('code.line-numbers').forEach((block) => {
+                hljs.lineNumbersBlock(block);
+            });
             const links = document.querySelectorAll('.annotation-link');
             const contents = document.querySelectorAll('.annotation-content');
             const defaultMsg = document.getElementById('default-msg');

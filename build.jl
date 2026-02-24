@@ -117,6 +117,11 @@ function build()
     
     final_html = template
 
+    # Update Title from H1
+    title_match = match(r"^#\s+(.+)$"m, main_content_md)
+    page_title = title_match !== nothing ? title_match.captures[1] : "Interactive Instructions"
+    final_html = replace(final_html, r"<title>.*?</title>" => "<title>$page_title</title>")
+
     # Injecting ToC
     toc_regex = r"(<ul class=\"toc-list\" id=\"toc-list\">).*?(</ul>)"s
     toc_m = match(toc_regex, final_html)
