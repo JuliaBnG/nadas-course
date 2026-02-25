@@ -113,8 +113,7 @@ function build()
         toc_html *= """<li class="toc-item level-$(item.level)"><a href="#$(item.id)">$(item.title)</a></li>\n"""
     end
 
-    # 5. Inject into Template using match and offsets for safety
-    
+    # 5. Inject into Template
     final_html = template
 
     # Update Title from H1
@@ -122,40 +121,33 @@ function build()
     page_title = title_match !== nothing ? title_match.captures[1] : "Interactive Instructions"
     final_html = replace(final_html, r"<title>.*?</title>" => "<title>$page_title</title>")
 
-    # Injecting ToC
-    toc_regex = r"(<ul class=\"toc-list\" id=\"toc-list\">).*?(</ul>)"s
-    toc_m = match(toc_regex, final_html)
-    if toc_m !== nothing
-        start_pos = toc_m.offsets[1] + length(toc_m[1])
-        end_pos = toc_m.offsets[2] - 1
-        final_html = final_html[1:start_pos] * "\n" * toc_html * final_html[end_pos+1:end]
+    # Helper function for safe injection
+    function inject(html, pattern, content)
+        m = match(pattern, html)
+        if m !== nothing
+            # Join parts manually to avoid SubstitutionString escape issues
+            return html[1:prevind(html, m.offsets[1] + length(m.captures[1]))] * 
+                   "\n" * content * 
+                   html[m.offsets[2]:end]
+        end
+        return html
     end
 
+    # Injecting ToC
+    final_html = inject(final_html, r"(<!-- TOC_START -->).*?(<!-- TOC_END -->)"s, toc_html)
+
     # Injecting Main Flow
-    main_flow_regex = r"(<div class=\"main-flow\" id=\"main-content\">).*?(</div>\s*<!-- ANNOTATION AREA -->)"s
-    main_m = match(main_flow_regex, final_html)
-    if main_m !== nothing
-        start_pos = main_m.offsets[1] + length(main_m[1])
-        end_pos = main_m.offsets[2] - 1
-        final_html = final_html[1:start_pos] * "\n" * main_html * final_html[end_pos+1:end]
-    end
+    final_html = inject(final_html, r"(<!-- MAIN_START -->).*?(<!-- MAIN_END -->)"s, main_html)
     
     # Injecting Annotations
-    anno_pane_regex = r"(<div class=\"annotation-pane\" id=\"annotation-container\">).*?(</div>\s*<script>)"s
-    anno_m = match(anno_pane_regex, final_html)
-    if anno_m !== nothing
-        start_pos = anno_m.offsets[1] + length(anno_m[1])
-        end_pos = anno_m.offsets[2] - 1
-        
-        new_anno_content = """
+    new_anno_content = """
         <!-- Default State -->
         <div id="default-msg" class="placeholder-text">
             Select a highlighted term to view annotations.
         </div>
 """ * annotations_html
-        
-        final_html = final_html[1:start_pos] * new_anno_content * final_html[end_pos+1:end]
-    end
+
+    final_html = inject(final_html, r"(<!-- ANNO_START -->).*?(<!-- ANNO_END -->)"s, new_anno_content)
 
     # 6. Save Output
     write(OUTPUT_FILE, final_html)

@@ -568,6 +568,17 @@ Two,
 > more AI can do for you.  You ask the right questions or propose
 > proper prompts.
 
+Three,
+
+> AI is better at talking command lines, as well as a script of
+> command lines.  It is a good practice to get familiar with command
+> lines.
+
+Discourse,
+
+> MarkDown will be a more popular "programing language" than any other
+> one.
+
 ### The simulation packages
 
 Not all of my simulatin codes will be open-sourced.  The main reason is I need

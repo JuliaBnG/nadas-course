@@ -20,6 +20,10 @@
         };
     </script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
             --primary-color: #2c3e50;
             --link-color: #3498db;
@@ -33,15 +37,46 @@
             height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #333;
+            overflow: hidden;
+            width: 100vw;
         }
 
         .toc-pane {
-            width: 250px;
+            flex: 0 0 250px;
+            min-width: 150px;
             background: var(--bg-light);
             padding: 2rem 1.5rem;
             overflow-y: auto;
             border-right: 1px solid var(--border-color);
             font-size: 0.9rem;
+        }
+
+        .resizer {
+            width: 16px;
+            cursor: col-resize;
+            background: transparent;
+            z-index: 100;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 -8px;
+            position: relative;
+        }
+
+        .resizer::after {
+            content: "";
+            width: 2px;
+            height: 40px;
+            background: var(--border-color);
+            border-radius: 2px;
+            transition: background 0.2s, width 0.2s, height 0.2s;
+        }
+
+        .resizer:hover::after, .resizer.dragging::after {
+            background: var(--link-color);
+            width: 4px;
+            height: 60px;
         }
 
         .toc-pane h3 {
@@ -81,10 +116,12 @@
             background: white;
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
             z-index: 1;
+            min-width: 300px;
         }
 
         .annotation-pane {
-            width: 400px;
+            flex: 0 0 400px;
+            min-width: 200px;
             background: var(--bg-light);
             padding: 2rem;
             overflow-y: auto;
@@ -206,66 +243,23 @@
     <div class="toc-pane" id="toc-container">
         <h3>Contents</h3>
         <ul class="toc-list" id="toc-list">
-            <!-- ToC items will be injected here -->
+<!-- TOC_START -->
+<!-- TOC_END -->
         </ul>
     </div>
 
+    <div class="resizer" id="resizer-left"></div>
+
     <!-- PRIMARY CONTENT AREA -->
     <div class="main-flow" id="main-content">
-        <h1>Project Title</h1>
-        <p>This is your main instruction flow. Click on the highlighted terms to see more details in the right panel.</p>
-        
-        <section>
-            <h2>1. Introduction</h2>
-            <p>Welcome to the guide. Before we start, make sure you understand the 
-                <span class="annotation-link" data-target="prerequisites">Prerequisites</span>.
-            </p>
-        </section>
-
-        <section>
-            <h2>2. Implementation</h2>
-            <p>We will be using a 
-                <span class="annotation-link" data-target="tech-stack">Modern Tech Stack</span> 
-                to build out the features. Follow the 
-                <span class="annotation-link" data-target="naming-convention">Naming Conventions</span> 
-                defined in our style guide.
-            </p>
-        </section>
+<!-- MAIN_START -->
+<!-- MAIN_END -->
     </div>
 
-    <!-- ANNOTATION AREA -->
+    <div class="resizer" id="resizer-right"></div>
     <div class="annotation-pane" id="annotation-container">
-        <!-- Default State -->
-        <div id="default-msg" class="placeholder-text">
-            Select a highlighted term to view annotations.
-        </div>
-        
-        <!-- Annotation: Prerequisites -->
-        <div id="prerequisites" class="annotation-content">
-            <h3>Prerequisites</h3>
-            <ul>
-                <li>Node.js v18+</li>
-                <li>Git installed</li>
-                <li>Basic knowledge of Markdown</li>
-            </ul>
-        </div>
-
-        <!-- Annotation: Tech Stack -->
-        <div id="tech-stack" class="annotation-content">
-            <h3>Tech Stack</h3>
-            <p>The project uses:</p>
-            <ul>
-                <li><strong>HTML5/CSS3</strong> for structure</li>
-                <li><strong>Vanilla JS</strong> for interactions</li>
-                <li><strong>Markdown</strong> for content</li>
-            </ul>
-        </div>
-
-        <!-- Annotation: Naming Convention -->
-        <div id="naming-convention" class="annotation-content">
-            <h3>Naming Conventions</h3>
-            <p>Please use <code>kebab-case</code> for file names and <code>camelCase</code> for variable names within your scripts.</p>
-        </div>
+<!-- ANNO_START -->
+<!-- ANNO_END -->
     </div>
 
     <script>
@@ -320,6 +314,54 @@
             document.querySelectorAll('code.line-numbers').forEach((block) => {
                 hljs.lineNumbersBlock(block);
             });
+
+            // Resizing logic
+            const resizerLeft = document.getElementById('resizer-left');
+            const resizerRight = document.getElementById('resizer-right');
+            const tocPane = document.getElementById('toc-container');
+            const annotationPane = document.getElementById('annotation-container');
+
+            function initResizer(resizer, pane, isLeft) {
+                let x = 0;
+                let w = 0;
+
+                const mouseDownHandler = function (e) {
+                    x = e.clientX;
+                    const styles = window.getComputedStyle(pane);
+                    w = parseInt(styles.width, 10);
+
+                    document.addEventListener('mousemove', mouseMoveHandler);
+                    document.addEventListener('mouseup', mouseUpHandler);
+                    resizer.classList.add('dragging');
+                    document.body.style.cursor = 'col-resize';
+                    document.body.style.userSelect = 'none';
+                    e.preventDefault();
+                };
+
+                const mouseMoveHandler = function (e) {
+                    const dx = e.clientX - x;
+                    const newWidth = isLeft ? w + dx : w - dx;
+                    const minW = isLeft ? 150 : 200;
+                    if (newWidth >= minW) {
+                        pane.style.flexBasis = `${newWidth}px`;
+                        pane.style.width = `${newWidth}px`;
+                    }
+                };
+
+                const mouseUpHandler = function () {
+                    document.removeEventListener('mousemove', mouseMoveHandler);
+                    document.removeEventListener('mouseup', mouseUpHandler);
+                    resizer.classList.remove('dragging');
+                    document.body.style.removeProperty('cursor');
+                    document.body.style.removeProperty('user-select');
+                };
+
+                resizer.addEventListener('mousedown', mouseDownHandler);
+            }
+
+            initResizer(resizerLeft, tocPane, true);
+            initResizer(resizerRight, annotationPane, false);
+
             const links = document.querySelectorAll('.annotation-link');
             const contents = document.querySelectorAll('.annotation-content');
             const defaultMsg = document.getElementById('default-msg');
