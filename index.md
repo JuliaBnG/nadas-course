@@ -577,12 +577,13 @@ Three,
 Discourse,
 
 > MarkDown will be a more popular "programing language" than any other
-> one.
+> one.  Julia has an advantage for its scripts are easy to compose as
+> Python, and as fast as C/Fortran.
 
 ### The simulation packages
 
 Not all of my simulatin codes will be open-sourced.  The main reason is I need
-funding to have it organized.  
+funding to have it organized.
 
 
 ---
