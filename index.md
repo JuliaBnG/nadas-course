@@ -3,7 +3,7 @@
 > This course is primarily designed for data scientists working on
 > breeding and genetics.  People who want to use Julia for other
 > purposes may also find it useful.  We will learn the development
-> cycle of a Julia project.*
+> cycle of a Julia project.
 
 ## Preface
 
@@ -20,13 +20,13 @@ more meaningful, as:
 
 ### What you will learn
 
-The main goal of this course is to instruct you to set up a Julia
-simulation project, which uses packages that are under the umbrella of
-`JuliaBnG`.
+The main goal of this course is to instruct you to set up **a Julia
+simulation project**, which uses packages that are under the umbrella
+of `JuliaBnG`.
 
 I will also show you how to
 
-- [*Optional*] Configure `git` to manage your project.
+- [*Optional*] Configure `git` to control your project versions.
 - Write, manage and build a `julia` project.
 - Trace and test your `julia` project using `Revise.jl`.
 
@@ -41,7 +41,8 @@ simulation package runnable on your own computer.
 - External links will be opened in a new tab if clicked.
 - Annotations will appear in the right most column if clicked.
 - Inline codes are in `deep pink` color.
-- Feel free to click the links, especially the annotations.
+
+Please feel free to click the links, especially the annotations.
 
 ### Materials
 
@@ -65,10 +66,12 @@ in the top shepherds.
 
 ### Setting up the environment
 
-We are going to run some simulation to test our breeding programs. We
-will write some script and tools in Julia.  We have already had Julia
-installed on our laptops.  But we are still going through again to see
-if our environment is ready for heavy lifting.
+We are going to run some simulation to test our breeding programs.
+Some script and tools in Julia are to be written for that.
+
+We have already had Julia installed on our laptops.  But we are still
+going through again to see if our environment is ready for heavy
+lifting.
 
 #### 1. Git
 
@@ -77,8 +80,8 @@ and [configured](annotation:git-configuration).
 
 #### 2. Terminal
 
-You will test and run the project in a terminal.  Linux and MacOS
-users can use the built-in terminal.  Windows users can use `Windows
+We will test and run the project in a terminal.  Linux and MacOS users
+can use the built-in terminal.  Windows users can use `Windows
 Terminal` and WSL2, if possible.  Your terminal should be able to run
 command `julia` and `git`.
 
@@ -92,7 +95,7 @@ installation](annotation:julia-installation) to make sure if you
 #### 4. Julia editor
 
 *Julia editor* here doesn't refer to the editor you write your codes.
-It is the one `julia` macro `@edit` invoked in the REPL.  Click
+It is the one `julia` macro `@edit` invoks in the REPL.  Click
 [here](annotation:julia-editor) to see if you want to know how a
 function you are using is implemented.
 
@@ -112,7 +115,7 @@ Out-of-Africa](https://sashagusev.github.io/Stabilizing-Selection-Sim/)
 shows an example that many programmers once dreamed of:
 
 - A web interface
-- Sets up parameters in GUI
+- Parameters that can be changed in GUI
 - Click a button to start the simulation
 - Wait for the simulation to finish
 - Get the results in fancy plots
@@ -129,11 +132,12 @@ steps:
 4. Selection with changed breeding schemes, e.g., with EBV from PBLUP
    to GBLUP.
 
-One may think that the above steps can be standardized, such that we
-can list the parameters in a GUI, and click a button to start the
-simulation.  However, what if change the nuclear population structure,
-e.g., from a single large population to a one that consists many small
-flocks?  What if we change the mating rules?
+One may think that the above steps can be standardized also, such that
+we can list the parameters in a GUI, and then click a button to start
+the simulation.  However, what if change the nuclear population
+structure, e.g., from a single large population to a one that consists
+many small flocks?  What if we change the mating rules?  Such
+situations are numerous.
 
 The breeding practices of different species are different.  The
 practices of a same species raised in different countries may also
@@ -145,8 +149,8 @@ routes and methods can be a nightmare.
 > To be or not to be, that is a question.
 
 is a famous line.  Organization of many of such lines makes many
-scripts of different genres and styles.  In other words, one doesn't
-write a script using the same template.
+scripts of different genres and styles.  A script is more versatile
+and powerful than a GUI.
 
 ### Project analysis
 
@@ -551,11 +555,18 @@ git clone https://github.com/JuliaBnG/nadas-course
 ```
 
 AI can't be avoided for people who are actively working today.  My argue for AI
-is, 
+are one, 
 
 > The AI products that have made a huge exodus of computer science
 > students and work forces must be effective to some extent.  They are
 > also at our fingertips.
+
+Two,
+
+> AI is a multiplier and assistant.  Its power depends on the user.
+> If a user knows nothing, AI can't do much.  The more you know, the
+> more AI can do for you.  You ask the right questions or propose
+> proper prompts.
 
 ### The simulation packages
 
@@ -569,4 +580,4 @@ funding to have it organized.
 
 by *Dr. Xijiang Yu*
 
-*Last updated: February 24, 2026*
+*Last updated: February 25, 2026*
