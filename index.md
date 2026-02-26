@@ -1,46 +1,41 @@
-# Learning Julia the hard way
+# Learning Julia the Hard Way
 
-> This course is primarily designed for data scientists working on
-> breeding and genetics.  People who want to use Julia for other
-> purposes may also find it useful.  We will learn the development
+> This course is primarily designed for data scientists working in
+> breeding and genetics. Others who want to use Julia for different
+> purposes may also find it useful. We will explore the development
 > cycle of a Julia project.
 
 ## Preface
 
 One can lift heavy weights as if they are light (in Chinese, 举重若轻),
-to show its capability.  One can also lift light weights the way to
-lift heavy weights (in Chinese, 举轻若重).  The latter is sometime
-more meaningful, as:
+to demonstrate capability. One can also lift light weights as if they 
+were heavy (in Chinese, 举轻若重). The latter is sometimes
+more meaningful, because:
 
-- The readers here have most probably had some programming trainings
-  before.
-- We are dealing with *heavy* tasks more or less.
-- The *hard* way shown here may serve the readers an easier life in
-  the future.
+- Readers here likely have some prior programming training.
+- We are dealing with relatively *heavy* tasks.
+- The *hard* way shown here may make life easier for readers in the future.
 
 ### What you will learn
 
-The main goal of this course is to instruct you to set up **a Julia
-simulation project**, which uses packages that are under the umbrella
-of `JuliaBnG`.
+The main goal of this course is to guide you through setting up **a Julia
+simulation project**, using packages from the `JuliaBnG` ecosystem.
 
-I will also show you how to
+I will also show you how to:
 
-- [*Optional*] Configure `git` to control your project versions.
-- Write, manage and build a `julia` project.
+- [*Optional*] Configure `git` for project version control.
+- Write, manage, and build a `julia` project.
 - Trace and test your `julia` project using `Revise.jl`.
 
-Note that my configurations may not be optimal.  You may give me some
-feedback and suggestions.
+Note that these configurations may not be optimal. Feedback and suggestions are welcome.
 
-The bottom line of this tutorial is that you'd better make the
-simulation package runnable on your own computer.
+The primary objective of this tutorial is to ensure you can run the simulation package on your own computer.
 
 ### Conventions
 
-- External links will be opened in a new tab if clicked.
-- Annotations will appear in the right most column if clicked.
-- Inline codes are in `deep pink` color.
+- External links will open in a new tab.
+- Annotations will appear in the rightmost column when clicked.
+- Inline code is highlighted in `deep pink`.
 
 Please feel free to click the links, especially the annotations.
 
@@ -50,111 +45,104 @@ Please feel free to click the links, especially the annotations.
 - [Fluffy sheep breeder](https://sheep-breeder-2.vercel.app/)
 - ["Source code" of this
   instruction](https://github.com/JuliaBnG/nadas-course)
-- The compiled instruction, as what you are reading.
+- The compiled instructions you are currently reading.
 
 ## Introduction
 
 ### The task
 
-The project we are going to deal with today is to design a breeding
-program to tackle [Fluffy sheep
+The project we are addressing today is the design of a breeding
+program for the [Fluffy sheep
 breeder](https://sheep-breeder-2.vercel.app/). The breeding task is
-easy to carry out, as you can select arbitrary number of parents and
-arbitrary weights on the two traits. The breeding will very likely go
-on.  You might need to think more carefully to have your name appear
-in the top shepherds.
+straightforward: you can select any number of parents and assign 
+arbitrary weights to the two traits. Breeding will likely continue, 
+but careful planning is required to rank among the top shepherds.
 
 ### Setting up the environment
 
-We are going to run some simulation to test our breeding programs.
-Some script and tools in Julia are to be written for that.
+We will run simulations to test our breeding programs. This requires 
+writing some scripts and tools in Julia.
 
-We have already had Julia installed on our laptops.  But we are still
-going through again to see if our environment is ready for heavy
-lifting.
+Julia should already be installed on your laptop, but we will double-check 
+to ensure the environment is ready for intensive tasks.
 
 #### 1. Git
 
-You'd better to have `git` [installed](annotation:git-installation)
+It is recommended to have `git` [installed](annotation:git-installation)
 and [configured](annotation:git-configuration).
 
 #### 2. Terminal
 
-We will test and run the project in a terminal.  Linux and MacOS users
-can use the built-in terminal.  Windows users can use `Windows
-Terminal` and WSL2, if possible.  Your terminal should be able to run
-command `julia` and `git`.
+We will test and run the project in a terminal. Linux and macOS users
+can use the built-in terminal. Windows users can use `Windows
+Terminal` and WSL2, if possible. Your terminal should be able to execute the `julia` and `git` commands.
 
 #### 3. Julia
 
-Once you have your terminal ready, whether you are using Linux, MacOS
-or Windows, go through [Julia
-installation](annotation:julia-installation) to make sure if you
-`julia` is properly installed.
+Once your terminal is ready, regardless of your operating system, 
+refer to [Julia installation](annotation:julia-installation) to 
+ensure `julia` is correctly installed.
 
 #### 4. Julia editor
 
-*Julia editor* here doesn't refer to the editor you write your codes.
-It is the one `julia` macro `@edit` invoks in the REPL.  Click
-[here](annotation:julia-editor) to see if you want to know how a
-function you are using is implemented.
+The *Julia editor* mentioned here is not the one you use to write 
+code. It is the editor invoked by the `@edit` macro in the Julia REPL. 
+Click [here](annotation:julia-editor) to learn how to inspect the 
+implementation of functions.
 
 #### 5. Working directory
 
-It is a good habit to save your project in a working directory, e.g.,
-`~/projects`.  Our project, which can be named as `flfSheep`, will be
-saved in `~/projects/flfSheep`.
+It is good practice to save your projects in a dedicated working directory, 
+e.g., `~/projects`. For example, our project, named `flfSheep`, 
+will be saved in `~/projects/flfSheep`.
 
 ## The project
 
-### The best practices
+### Best practices
 
-Let's talk about how a simulation is carried out.  [Stabilizing
+Let's discuss how a simulation is conducted. [Stabilizing
 Selection
 Out-of-Africa](https://sashagusev.github.io/Stabilizing-Selection-Sim/)
-shows an example that many programmers once dreamed of:
+provides an example that many programmers dream of:
 
 - A web interface
-- Parameters that can be changed in GUI
-- Click a button to start the simulation
-- Wait for the simulation to finish
-- Get the results in fancy plots
+- Parameters adjustable via GUI
+- A button to start the simulation
+- A progress indicator
+- Results displayed in sophisticated plots
 
-Sound nice?  Let think this twice.
+Sounds good? Let's reconsider.
 
-A typical simulation of breeding practice may consist of the following
-steps:
+A typical breeding simulation may consist of the following steps:
 
 1. Generate a historical population to create linkage disequilibrium
    (LD).
-2. Generate a bottleneck to mimic the founder effect.
-3. Selection a few generations.
-4. Selection with changed breeding schemes, e.g., with EBV from PBLUP
-   to GBLUP.
+2. Create a bottleneck to mimic the founder effect.
+3. Selection over several generations.
+4. Selection with updated breeding schemes, e.g., switching EBV from 
+   PBLUP to GBLUP.
 
-One may think that the above steps can be standardized also, such that
-we can list the parameters in a GUI, and then click a button to start
-the simulation.  However, what if change the nuclear population
-structure, e.g., from a single large population to a one that consists
-many small flocks?  What if we change the mating rules?  Such
-situations are numerous.
+One might think these steps could be standardized so that parameters 
+are listed in a GUI. However, what if we change the nuclear population
+structure—for example, from a single large population to one 
+consisting of many small flocks? What if we change the mating rules? 
+Such scenarios are numerous.
 
-The breeding practices of different species are different.  The
-practices of a same species raised in different countries may also
-differ.  The art of breeding that varies from place to place and from
-time to time makes script-based simulation more realistic.  The
-established simulation procedure is fancy, change the simulation
-routes and methods can be a nightmare.
+Breeding practices vary by species, and practices for the same 
+species may vary by country. The art of breeding, which changes 
+across locations and time, makes script-based simulation more 
+realistic. While established simulation procedures can be 
+sophisticated, changing the simulation logic or methods can be difficult.
 
-> To be or not to be, that is a question.
+> To be or not to be, that is the question.
 
-is a famous line.  Organization of many of such lines makes many
-scripts of different genres and styles.  A script is more versatile
-and powerful than a GUI.
+This famous line is just one of many. Organizing these lines 
+results in scripts of various genres and styles. A script is more 
+versatile and powerful than a GUI.
 
 ### Project analysis
 
-We can take some numbers from the [Fluffy sheep
+We can take some figures from the [Fluffy sheep
 breeder](https://sheep-breeder-2.vercel.app/) webpage:
 
 - $N_{\mathrm{ram}} = 50$
@@ -166,70 +154,65 @@ breeder](https://sheep-breeder-2.vercel.app/) webpage:
   - Wool length
     - $\mu_0 = 100$
     - $\sigma_P = 10$
-- Final score seems to be final mean of the two traits minus 200.
+- The final score appears to be the mean of the two traits minus 200.
 
-It is likely that the wool length has higher heritability than
+It is likely that wool length has higher heritability than
 curliness.
 
-Above are my observations.  Correct me if you find otherwise.
+These are my observations; please let me know if you observe different values.
 
-Our task is to write a Julia simulation package to run on our own
-computer to find a breeding program that can achieve the highest score
-possible.
+Our goal is to develop a Julia simulation package to identify a 
+breeding program that achieves the highest possible score.
 
 ### Development of the package
 
-Before we start, make sure again that you have had your environment
-setup as described in the previous section.  We will stay in the Julia
-REPL until we finish the project.
+Before we start, ensure your environment is set up as described 
+in the previous section. We will work within the Julia REPL until the 
+project is complete.
 
 #### 1. Create the project
 
-In your terminal, go to the directory where you want to create the
-project:
+In your terminal, navigate to the directory where you want to create 
+the project:
 
 ```bash
-cd ~/projects  # or the directory you want to save your project
-julia          # to enter Julia REPL
+cd ~/projects  # or your preferred project directory
+julia          # to enter the Julia REPL
 ```
 
-Type `]` to enter the package mode, and then type the following
-commands:
+Press `]` to enter package mode, and execute the following commands:
 
 ```julia
 generate flfSheep
 
-# type <backspace> to exit the package mode, and back to the REPL
-cd("flfSheep")  # to enter the project directory
+# Press <backspace> to exit package mode and return to the REPL
+cd("flfSheep")  # Enter the project directory
 
-# type `]` to enter the package mode again
-activate .  # to activate the project we just created
+# Press `]` to enter package mode again
+activate .  # Activate the project we just created
 
-# "(flfSheep) pkg>" is shown as the prompt
-# type `status` to see the status of the project
+# "(flfSheep) pkg>" will be displayed as the prompt
+# Type `status` to view the project's status
 
-# type `<backspace>` to exit the package mode
-using flfSheep  # to load the project
+# Press `<backspace>` to exit package mode
+using flfSheep  # Load the project
 ```
 
-Click the next link to see the [structure of the
-project](annotation:project-structure).
+Click the following link to view the [project structure](annotation:project-structure).
 
-We can see that there is a `greet` function in the `src/flfSheep.jl`
-file.  Below is what you might see in your terminal:
+You will see a `greet` function in the `src/flfSheep.jl` file. 
+Below is an example of what you might see in your terminal:
 
 ![](start.png)
 
-Mean while, you might want to read the [almighty
-tab](annotation:almighty-tab)
+In the meantime, you may want to read about the [almighty tab](annotation:almighty-tab).
 
-At this stage, you can use your favorite editor to edit the files in
-the project directory.
+At this stage, you can use your favorite editor to modify the files 
+in the project directory.
 
-#### 2. Add some `JuliaBnG` packages
+#### 2. Add `JuliaBnG` packages
 
-In the REPL, type `]` to enter the package mode, and then type the
-following command:
+In the REPL, press `]` to enter package mode, and run the following command:
 
 ```julia
 add BnGStructs           # from JuliaBnG
@@ -239,40 +222,38 @@ add Random
 add RelationshipMatrices # from JuliaBnG
 add StatsBase
 
-# I haven't registered Breeding.jl in the General registry while writing this tutorial.
-# You can add it by using the following command:
+# Breeding.jl is not yet in the General registry.
+# Add it using its URL:
 add https://github.com/JuliaBnG/Breeding.jl  # from JuliaBnG
 ```
 
-Click the next link to see [what have
-changed](annotation:what-have-changed).
+Click the next link to see [what has changed](annotation:what-have-changed).
 
 #### 3. Write a test function
 
-Refer [hello world project](annotation:hello-world-project) to make
-sure that you have done the steps below correctly, as well as some
-explanations.
+Refer to the [hello world project](annotation:hello-world-project) for 
+detailed explanations and to ensure you have followed these steps correctly.
 
-Create a file `src/tstBreeding.jl` with the following content:
+Create a file named `src/tstBreeding.jl` with the following content:
 
 ```julia
 """
   tstFlf()
 
-Test scripts to find a good breeding program for the fluffy sheep.
+Test script to identify an effective breeding program for the fluffy sheep.
 """
 function tstFlf()
    @info "Starting the test function" 
 end
 ```
 
-Replace the line
+In `src/flfSheep.jl`, replace the line:
 
 ```julia
 greet() = print("Hello World!")
 ```
 
-in `src/flfSheep.jl` with 
+with:
 
 ```julia
 using BnGStructs
@@ -288,54 +269,54 @@ include("tstBreeding.jl")
 export tstFlf
 ```
 
-Up to now, although the package `flfSheep` doesn't do anything useful,
-we have successfully created a package and added some dependencies to
-it.  This is a package *Hello world*.  From this point, we can start
-to write our own breeding program simulation, which might be a
-`Hamlet` or `Macbeth` in breeding.
+At this point, although `flfSheep` doesn't yet perform complex 
+tasks, you have successfully created a package and added its 
+dependencies. This is your "Hello World" package. From here, 
+you can begin developing your own breeding simulations—perhaps 
+the "Hamlet" or "Macbeth" of breeding programs.
 
-The rest of the tutorial all included in the `tstBreeding.jl` file,
-which is shown in the next section.
+The rest of the tutorial is contained within the `tstBreeding.jl` 
+file, as shown in the next section.
 
 ## The simulation
 
-I copied [a sample simulation
+I have provided a [sample simulation
 program](https://github.com/JuliaBnG/nadas-course/blob/main/tstBreeding.jl)
-here with [explanations](annotation:simulation-annots).  You can
-simply replace the file `src/tstBreeding.jl` in your project with the
-sample file.  You can modify the file to suit your needs.
+here with [explanations](annotation:simulation-annots). You can 
+replace the contents of `src/tstBreeding.jl` in your project with 
+this sample and modify it as needed.
 
 ```julia line-numbers
 """
     founder_genotype(nid)
 
-Generate genotypes and their linkage map for `nid` sheep.
+Generate genotypes and a linkage map for `nid` sheep.
 """
 function founder_genotype(nid)
     @info "Return genotypes and a pedigree"
 
-    # Generate a historic population using package `FisherWright`
-    ne = nid + 50   # effective population size
-    ng = 2000  # number of generations of random mating of `ne` ID
-    mr = 1.0   # mutation rate per Morgan per meiosis
-    sheep = Sheep(ne) # A Sheep Struct that define its name, pop size, chrs, and M
+    # Generate a historical population using the `FisherWright` package
+    ne = nid + 50   # Effective population size
+    ng = 2000       # Number of generations of random mating
+    mr = 1.0        # Mutation rate per Morgan per meiosis
+    sheep = Sheep(ne) # A Sheep struct that defines name, population size, chromosomes, and M
 
     mts, cbp = fisher_wright(
-        ne,  # this function generate LD among SNPs
+        ne,  # This function generates LD among SNPs
         ng,  # at mutation-drift equilibrium
-        sheep.chromosome, # lengths in bp downloaded from NCBI
+        sheep.chromosome, # Chromosome lengths downloaded from NCBI
         mr;
         M = sheep.M,  # 10⁸ bp per Morgan
     )
 
     hxy, lmp = muts2bitarray(mts, cbp; flip = true)
 
-    # Sample exclusive 20k chip SNP and 5k QTL. Sample 150 ID
-    # - we sample 150 ID first
+    # Sample an exclusive 20k SNP chip and 5k QTL. Sample 150 IDs.
+    # - First, sample 150 IDs
     maf = 0.0
     hxy, lmp = sampleID(hxy, lmp, maf, nid)
 
-    # - sample chip SNP and QTL
+    # - Sample chip SNPs and QTLs
     nchp, nqtl = 20_000, 5_000
     chip = SNPSet("chip", nchp; maf = 0.1, exclusive = true)
     qtl = SNPSet("qtl", nqtl; maf = 0.0, exclusive = true)
@@ -354,9 +335,9 @@ function traits()
     curliness = Trait("cn"; h² = 0.64, μ = 100.0, σₐ = 8)
     wlength = Trait("wl"; h² = 0.36, μ = 100.0, σₐ = 6)
     trts = [curliness, wlength]
-    V = [ # genetic VCV matrix of these two traits
+    V = [ # Genetic VCV matrix for these two traits
         64.0 -30
-        -30 36  # r = -5/8, modify -30 if you want other r.
+        -30 36  # r = -5/8; adjust -30 for a different correlation.
     ]
     return trts, V
 end
@@ -364,7 +345,7 @@ end
 """
     pedigree(prt, trts)
 
-Create an empty pedigree whose values are to be updated later.
+Create an empty pedigree to be updated later.
 """
 function pedigree(prt, trts, nram)
     nid = size(prt, 1)
@@ -389,13 +370,12 @@ end
 """
     founder_pedigree(hxy, lmp, nram, trts, V)
     
-Create the pedigree for generation 0 (the founder generation) with the
-genotypes and the linkage map.  The QTL effects are sampled based on
-the genetic VCV matrix `V` of the traits, and the TBV and phenotypes
-are calculated based on the genotypes and the QTL effects.
+Create the pedigree for the founder generation (G0) using genotypes 
+and the linkage map. QTL effects are sampled based on the genetic 
+VCV matrix `V`, and TBV and phenotypes are calculated.
 """
 function founder_pedigree(hxy, lmp, nram, trts, V)
-    eqtl(hxy, lmp, V, trts)  # sample the QTL effects for the two traits.
+    eqtl(hxy, lmp, V, trts)  # Sample QTL effects for the two traits.
     nid = size(hxy, 2) ÷ 2
     ped = pedigree(zeros(Int32, nid, 2), trts, nram)
     tbv!(ped, hxy, lmp, trts)
@@ -406,18 +386,17 @@ end
 """
     parents(ped, nram, newe)
 
-Select parents from the last generation of the pedigree `ped` to breed
-the next generation.  The sires and dams are selected based on their
-TMI (total merit index) values from high to low.
+Select parents from the most recent generation of the pedigree to 
+breed the next generation. Sires and dams are selected based on 
+their Total Merit Index (TMI) in descending order.
 
-Different breeding schemes can have different parents selection
-strategies.  A new `parents` function can be implemented and plugged
-in here.
+Different breeding schemes can use alternative selection strategies 
+by implementing a new `parents` function.
 """
 function parents(ped, nram, newe)
-    # find the last generation of the pedigree 
+    # Filter the pedigree for the most recent generation
     tpd = filter(row -> row.generation == ped.generation[end], ped)
-    # select rams and ewes separately 
+    # Select rams and ewes separately 
     spd = groupby(tpd, :sex)
 
     cnd = spd[(sex = 1,)]
@@ -430,7 +409,7 @@ function parents(ped, nram, newe)
 
     nid = size(tpd, 1)
 
-    # produce the same number of offspring as the last generation
+    # Produce the same number of offspring as the previous generation
     sires = StatsBase.sample(rams, nid; replace = true)
     dams = StatsBase.sample(ewes, nid; replace = true)
     sortslices([sires dams], dims = 1)
@@ -439,10 +418,9 @@ end
 """
     breeding_program(hxy, lmp, ped, lms, trts, V, nram, scenario; ngen = 5)
 
-A breeding program to update the pedigree and select parents for the
-next generation.  In this function, multiple trait BLUP is used to
-update the EBV of the two traits, and the TMI is updated based on the
-EBV.  The parents are selected based on the TMI values.
+Run a breeding program to update the pedigree and select parents for 
+future generations. Multi-trait BLUP is used to update EBVs, 
+and TMI is calculated accordingly.
 """
 function breeding_program(hxy, lmp, ped, lms, trts, V, nram, scenario; ngen = 5)
     for gen in 1:ngen
@@ -451,40 +429,40 @@ function breeding_program(hxy, lmp, ped, lms, trts, V, nram, scenario; ngen = 5)
         # Inverse of the numerator relationship matrix
         Ai = Ainv(ped)
 
-        # update EBV using multiple trait BLUP
+        # Update EBV using multi-trait BLUP
         mtpblup(ped, trts, Ai, V)
 
-        # update TMI
+        # Update TMI
         ped.tmi = scenario.w * ped.ebv_cn + (1 - scenario.w) * ped.ebv_wl
 
-        # select parents based on TMI
+        # Select parents based on TMI
         prt = parents(ped, scenario.nram, scenario.newe)
 
-        # placeholder for offspring genotypes
+        # Placeholder for offspring genotypes
         off = falses(size(hxy, 1), size(prt, 1) * 2)
 
-        # simulate genotypes for offspring
+        # Simulate genotypes for offspring
         gene_drop(hxy, off, prt, lms, lmp.pos)
 
-        # temporary pedigree for the next generation
+        # Temporary pedigree for the next generation
         tpd = pedigree(prt, trts, nram)
 
-        # calculate TBV for offspring
+        # Calculate TBV for offspring
         tbv!(tpd, off, lmp, trts)
         
-        # calculate phenotypes for offspring
+        # Calculate phenotypes for offspring
         phenotype!(tpd, trts)
 
-        # update generation number for offspring
+        # Update generation number for offspring
         tpd.generation .= gen
 
-        # update ID for offspring
+        # Update ID for offspring
         tpd.id .+= ped.id[end]
 
-        # update pedigree with offspring
+        # Update pedigree with offspring
         append!(ped, tpd)
 
-        # update genotypes with offspring
+        # Update genotypes with offspring
         hxy = hcat(hxy, off) 
     end
 
@@ -492,13 +470,13 @@ function breeding_program(hxy, lmp, ped, lms, trts, V, nram, scenario; ngen = 5)
 end
 
 """
-    report(ped, Ai)
-Report the average score and inbreeding coefficient of the last
-generation in the pedigree `ped` based on the numerator relationship
-matrix `Ai`.
+    report(ped)
+
+Report the average score and inbreeding coefficient for the final 
+generation of the pedigree.
 """
 function report(ped)
-    @info "The final score and inbreeding coefficient of the last generation"
+    @info "Final score and inbreeding coefficient for the last generation:"
     lg = groupby(ped, :generation)[(generation = ped.generation[end],)]
     @info "  - Score: ", round(mean(lg.tbv_cn) + mean(lg.tbv_wl), digits = 2)
     ic = 0.0
@@ -513,14 +491,14 @@ end
 """
     tstFlf()
 
-Tests program to find a good breeding scheme for Fluffy sheep.  In
-this function, brute force loops can be used to find a breeding plan
-to reach high score on https://sheep-breeder-2.vercel.app/.
+Test program to identify an optimal breeding scheme for Fluffy sheep. 
+This function can use brute-force loops to find a plan that 
+maximizes the score on https://sheep-breeder-2.vercel.app/.
 """
 function tstFlf()
-    @info "Start testing..."
+    @info "Starting test..."
 
-    @info "  - Generate genotypes, linkage map, traits, and pedigree for generation 0"
+    @info "  - Generating genotypes, linkage map, traits, and G0 pedigree"
     nram, newe = 50, 100
     hxy, lmp, lms = founder_genotype(nram + newe)
 
@@ -529,7 +507,7 @@ function tstFlf()
 
     scenario = (nram = 25, newe = 50, w = 0.5)
 
-    # keep a copy of the original data for testing different scenarios
+    # Maintain a copy of original data for testing different scenarios
     cxy, cmp, cpd = copy(hxy), copy(lmp), copy(ped)
 
     @info "Scenario: " scenario
@@ -538,53 +516,56 @@ function tstFlf()
 end
 ```
 
+This simulation is lightning fast. I have provided the basic framework; 
+to tackle the problem set introduced at the beginning, you might 
+loop through various scenarios (e.g., varying `nram` from 10 to 40) 
+to find the optimal result.
+
 ## Final remarks
 
-I hope you have enjoyed this tutorial.  Below are some more topics that I want
-to address a few words.
+I hope you enjoyed this tutorial. Below are a few additional topics 
+I would like to address.
 
-### About AI
+### AI in Development
 
-The template for this tutorial was written by AI.  It is one prompt for my first
-2-column webpage.  I prompted a few more to reach this final format.  You can
-download all the "source codes" of this tutorial from its `JuliaBnG` [github
-page](https://github.com/JuliaBnG/nadas-course).  For example:
+The template for this tutorial was generated with AI assistance. 
+Starting from a single prompt for a two-column webpage, I refined it 
+through several iterations to reach this final format. You can 
+download the complete "source code" for this tutorial from the 
+`JuliaBnG` [GitHub page](https://github.com/JuliaBnG/nadas-course). 
+For example:
 
 ```bash
 git clone https://github.com/JuliaBnG/nadas-course
 ```
 
-AI can't be avoided for people who are actively working today.  My argue for AI
-are one, 
+AI tools are becoming indispensable for modern workflows. My 
+arguments for using AI are:
 
-> The AI products that have made a huge exodus of computer science
-> students and work forces must be effective to some extent.  They are
-> also at our fingertips.
+First:
+> The AI tools that have significantly impacted the computer science 
+> workforce must be effective to some degree. They are also easily 
+> accessible.
 
-Two,
+Second:
+> AI acts as a multiplier. Its effectiveness depends on the user's 
+> knowledge. The more you know, the more effectively you can prompt 
+> and utilize AI.
 
-> AI is a multiplier and assistant.  Its power depends on the user.
-> If a user knows nothing, AI can't do much.  The more you know, the
-> more AI can do for you.  You ask the right questions or propose
-> proper prompts.
+Third:
+> AI excels at generating and explaining command-line operations and 
+> scripts. It is good practice to become familiar with these tools.
 
-Three,
+Furthermore:
+> Markdown is becoming a universal "programming language" for documentation. 
+> Julia offers the unique advantage of being as easy to write as 
+> Python while delivering the performance of C or Fortran.
 
-> AI is better at talking command lines, as well as a script of
-> command lines.  It is a good practice to get familiar with command
-> lines.
+### Simulation packages
 
-Discourse,
-
-> MarkDown will be a more popular "programing language" than any other
-> one.  Julia has an advantage for its scripts are easy to compose as
-> Python, and as fast as C/Fortran.
-
-### The simulation packages
-
-Not all of my simulatin codes will be open-sourced.  The main reason is I need
-funding to have it organized.
-
+Not all of my simulation code will be open-sourced. The primary reason 
+is that organizing and maintaining these packages requires 
+substantial resources and funding.
 
 ---
 
@@ -592,4 +573,4 @@ funding to have it organized.
 
 by *Dr. Xijiang Yu*
 
-*Last updated: February 25, 2026*
+*Last updated: February 26, 2026*

@@ -1,32 +1,37 @@
-# Julia installation
+# Julia Installation
 
-The best way install Julia is to run the following command in your terminal:
+The recommended way to install Julia is to run the following command in 
+your terminal:
 
 ```bash
 curl -fsSL https://install.julialang.org | sh
 ```
 
-This will install the latest stable version of `Julia`, as well as the `juliaup`
-tool. Start Julia from the command-line by typing `julia`. You will then enter the `julia` REPL (Read-Eval-Print Loop).  You will see something like this:
+This will install the latest stable version of Julia, as well as the 
+`juliaup` tool. Start Julia from the command-line by typing `julia`. 
+This will launch the Julia REPL (Read-Eval-Print Loop). You should see 
+something similar to this:
 
 ![](repl.png)
 
-Type `]` to enter the package manager mode. 
+Press `]` to enter package manager mode:
 
 ```julia
 add Revise
 ```
 
-Then type `ctrl-d` to exit `julia` REPL.
+Then press `Ctrl-D` to exit the Julia REPL.
 
-Create a file in your home directory called `.julia/config/startup.jl` with the following content:
+Create (or modify) a file at `~/.julia/config/startup.jl` with the 
+following content:
 
 ```julia
 using Revise
 ```
 
-Later, when you start `julia`, `Revise` will be loaded automatically.
+Subsequently, `Revise` will be loaded automatically whenever you 
+start Julia.
 
-`Revise` is a must-have tool for Julia developers.  It allows you to modify your
-code and see the changes immediately without restarting Julia.  We will use it
-throughout this course.
+`Revise` is an essential tool for Julia development. It allows you to 
+modify your code and observe the changes immediately without needing 
+to restart the session. We will use it throughout this course.

@@ -1,6 +1,6 @@
 # Project Structure
 
-This will create a new directory `flfSheep` with the following structure:
+The project directory `flfSheep` will have the following initial structure:
 
 ```
 flfSheep/
@@ -9,7 +9,7 @@ flfSheep/
     └── flfSheep.jl
 ```
 
-The project file `Project.toml` looks something like this:
+The `Project.toml` file will contain configuration similar to this:
 
 ```toml
 name = "flfSheep"
@@ -19,20 +19,21 @@ version = "0.1.0"
 ...
 ```
 
-The file `src/flfSheep.jl` is the main entry point of the project.  It looks like this:
+The `src/flfSheep.jl` file serves as the main entry point for the 
+module:
 
 ```julia
 module flfSheep
 
-greet() = print("Hello World"
+greet() = print("Hello World!")
 
 end # module flfSheep
 ```
 
-## What's more
+## Next Steps
 
-In the directory `flfSheep`, you can do version control with `git` command
-lines:
+Within the `flfSheep` directory, you can initialize version control 
+using `git`:
 
 ```bash
 git init

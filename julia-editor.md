@@ -1,22 +1,24 @@
-# Julia editor
+# Julia Editor
 
-In your terminal, you can set the default editor for Julia as follows:
+You can set the default editor for Julia in your terminal using the 
+following command:
 
 ```bash
 export JULIA_EDITOR="code"
 ```
 
-Then, start the Julia REPL.
+Then, start the Julia REPL:
 
 ```julia
 julia> @edit sin(1)
 ```
 
-You will see the codes of `sin` function in the VS Code editor.
+This will open the source code of the `sin` function in your editor 
+(e.g., VS Code).
 
-If you are running `julia` on a remote server, it is better to change
-`code` above to `emacsclient -nw`, `emacsclient -t`, `vim`, `nano`
-etc.  You will see the (high lighted) codes in the REPL.
+When running Julia on a remote server, it is better to use a terminal-based 
+editor such as `emacsclient -nw`, `emacsclient -t`, `vim`, or `nano`. This 
+will display the highlighted source code within your terminal session.
 
-To make editor persistent, you can add the `export` command above to your
-`.bashrc` file.
+To make this setting persistent, add the `export` command to your shell 
+configuration file (e.g., `~/.bashrc` or `~/.zshrc`).

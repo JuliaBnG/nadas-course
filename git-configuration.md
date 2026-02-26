@@ -2,7 +2,7 @@
 
 ## Configuration
 
-The easiest way to configure `git` is to save the following configuration in the `~/.gitconfig` file.
+The most direct way to configure `git` is to save the following content into your `~/.gitconfig` file.
 
 ```toml
 [user]
@@ -31,16 +31,13 @@ The easiest way to configure `git` is to save the following configuration in the
 
 ## Notes
 
-- modify name, user and email to your own
-- core editor can be code if you are using `git` locally. Otherwise, it is
-  better to use `nano`, `emacs` or `vim`. The `emacsclient -ct` here is using
-  `emacs` user service.
-- if you manage Jupyter notebook versions, the last group may be very useful.
+- **Replace** the name, user, and email with your own details.
+- The **core editor** can be set to `code` if you are using `git` locally. Otherwise, using `nano`, `emacs`, or `vim` is recommended. The `emacsclient -ct` setting shown here utilizes the `emacs` user service.
+- If you manage **Jupyter notebook versions**, the final configuration group will be very useful.
 
-## Bash
+## Using the Command Line
 
-You can run the following commands to configure `git`. Remember to modify the
-name, user and email to your own.
+Alternatively, you can use the following commands to configure `git`. Remember to substitute your own details for the placeholders.
 
 ```bash
 git config --global user.name "Xijiang Yu"

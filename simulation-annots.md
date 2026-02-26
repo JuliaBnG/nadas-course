@@ -1,72 +1,70 @@
-# Annotations for the main program
+# Annotations for the Main Program
 
-There are too many functions in this file.  When you write the
-project, it is better to separate them in different files.  They are
-put together here for the convenience of copy and interpretations.
+This file contains a large number of functions. In a production project, 
+it is better to organize them into separate files. They are consolidated 
+here for easier reference and explanation.
 
 ## Function `tstFlf`
 
-- line 205-230
+- lines 205-230
 
-We go to the last function first.  This is the driver of the full
-simulation.  The lines are self-stated. We
+Let's examine the last function first; it serves as the main driver 
+for the full simulation. The code is largely self-explanatory:
 
-1. generate the genotype, linkage map and pedigree `DataFrame` of
-   generation 0
-2. define traits and genetic VCV matrix
-3. define scenarios
-4. make and copy of generation 0 and do the test breeding program
+1. Generate the genotypes, linkage map, and pedigree `DataFrame` 
+   for generation 0.
+2. Define the traits and the genetic VCV matrix.
+3. Define the simulation scenarios.
+4. Create a copy of generation 0 and execute the test breeding program.
 
 ## Function `founder_genotype`
 
-- line 1-38
+- lines 1-38
 
-The function generates a historical population with $N_e = 200$ and
-2000 generations. At last ~ 120k segregating SNP on 26 autosomes are
-obtained.
+This function generates a historical population with $N_e = 200$ over 
+2,000 generations. Approximately 120,000 segregating SNPs across 26 
+autosomes are obtained.
 
-- Line 23
-  - Convert the genotypes into a BitArray and a linkage map
-- Line 31-35
-  - sample 150 ID, 20k chip SNP, and 5k QTL
+- **Line 23**: Convert genotypes into a `BitArray` and a linkage map.
+- **Lines 31-35**: Sample 150 IDs, a 20k SNP chip, and 5k QTLs.
   
 ### Remarks
 
-- In reality, you might increase ne and ng to create a large
-  population with very many SNP to sample from.
-- More complicate stuctures of historical populations may also
-  generated, e.g., split, expand, and merge.
-- **A 100 nok award** is earmarked to anyone who inform me first of a
-  faster forward simulator than `fisher_wright` here.  The above is a
-  fair setup to compare mine and others.
+- In practice, you might increase `ne` and `ng` to create a larger 
+  population with more SNPs to sample from.
+- More complex historical population structures, such as splits, 
+  expansions, and merges, can also be generated.
+- **A 100 NOK award** is offered to the first person to identify a 
+  forward simulator faster than `fisher_wright` under these conditions. 
+  The setup above provides a fair basis for comparison.
 
-## Functions `trait`
+## Function `traits`
 
-line 40-54
+- lines 40-54
 
-Setup the trait infomation and genetic VCV.
+Configure trait information and the genetic VCV matrix.
 
-## Function `pedigree`, `founder_pedigree`
+## Functions `pedigree` and `founder_pedigree`
 
-These functions are self explanary.
+These functions are self-explanatory.
 
 ## Function `parents`
 
-This function selects parents according to our criteria.  Different
-breeding programs require a parent function to create parent pairs
-according to their own schemes.
+This function selects parents based on specified criteria. Different 
+breeding programs can implement their own parent selection logic to 
+create pairs according to their specific schemes.
 
 ## Function `breeding_program`
 
-The breeding program function.  Here it select the population for 5
-consective years.
+The main breeding program function. In this example, it simulates 
+selection over five consecutive generations.
 
 ### Remark
 
-Note the `Ainv` function here is also significant.  It is faster than
-most similar functions in most scenarios.  It can also deal with huge
-pedigree which other program can't handle at all.
+The `Ainv` function is particularly noteworthy: it is exceptionally 
+fast and capable of handling massive pedigrees that often cause other 
+programs to fail.
 
 ## Function `report`
 
-Summarize the pedigree.
+Generates a summary of the pedigree data.

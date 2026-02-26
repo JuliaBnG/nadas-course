@@ -1,6 +1,6 @@
 # A Hello World Project
 
-The contents of file `src/flfSheep.jl`.
+The contents of the `src/flfSheep.jl` file:
 
 ```julia
 module flfSheep
@@ -11,47 +11,48 @@ using FisherWright
 using RelationshipMatrices
 
 include("tstBreeding.jl")
-# more files can be included here. 
-# pay attention to the order of function definition if using julia 1.12+.
+# More files can be included here. 
+# Pay attention to the order of function definitions if using Julia 1.12 or later.
 
-export tstFlf # to expose the function
+export tstFlf # Expose the function
 
 end # module flfSheep
 ```
 
-The contents of file `src/tstBreeding.jl`.
+The contents of the `src/tstBreeding.jl` file:
 
 ```julia
 """
     tstFlf()
-Tests program to find a good breeding scheme for Fluffy sheep.
+
+A test program to identify an effective breeding scheme for Fluffy sheep.
 """
 function tstFlf()
-    @info "Start testing..."
+    @info "Starting test..."
 end
 ```
 
-The strings between the two triple quotes are the docstrings of
-function `tstFlf`.
+The text within the triple quotes constitutes the docstring for the 
+`tstFlf` function.
 
 In your REPL:
 
 ```julia
 flfSheep.tstFlf()
-# or, if you have "export tstFlf" in flfsheep.jl
+# or, if you have "export tstFlf" in flfSheep.jl:
 tstFlf()
 ```
 
-Will show the info from function `tstFlf`.  The reason that your REPL
-can recognize the function is because of the package `Revize.jl` we
-added in the beginning.  It is a must-have.
+This will display the information from the `tstFlf` function. The 
+REPL recognizes the function because of the `Revise.jl` package we 
+activated earlier. It is a highly recommended tool.
 
-In your REPL
+In your REPL:
 
 ```julia
-?tstFlf # type '?' to enter the help mode
+?tstFlf # Type '?' to enter help mode
 ```
 
-will show you the docstring of the function.  These will be very
-useful if you have written a lot of functions.  These docstrings can
-also serve as contents of your manual automatically later.
+This will display the function's docstring. This is particularly 
+useful as your collection of functions grows, and these docstrings 
+can also be automatically incorporated into your manual later.

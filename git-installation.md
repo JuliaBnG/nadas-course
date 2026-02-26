@@ -4,31 +4,31 @@ title: "Git Installation"
 
 ## Windows
 
-Download from [https://git-scm.com/](https://git-scm.com/).
+Download the installer from [https://git-scm.com/](https://git-scm.com/).
 
 ## Linux
 
-The command set of `git` are usually installed by default.  If not, you can
-install it using the package manager.
+The `git` command-line tools are typically installed by default. If they are 
+not installed, you can use your system's package manager to install them:
 
 ```bash
-# For systems managed with `dnf`
+# For systems using `dnf`
 sudo dnf install git
 
-# For systems managed with `apt`
+# For systems using `apt`
 sudo apt install git
 
-# For systems managed with `pacman`
+# For systems using `pacman`
 sudo pacman -S git
 
-# For systems managed with `zypper`
+# For systems using `zypper`
 sudo zypper install git
 ```
 
-## MacOS
+## macOS
 
-Download from [https://git-scm.com/](https://git-scm.com/).
+Download the installer from [https://git-scm.com/](https://git-scm.com/).
 
 ## Verification
 
-Run `git --version` to verify that `git` is installed.
+Run `git --version` to verify the installation.
